@@ -20,16 +20,13 @@ vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.config/nvim/.undodir"
 vim.opt.undofile = true
 vim.opt.clipboard = "unnamedplus"
--- Explicity use OSC52 for ssh sessions
+-- Explicity use OSC52 for copying to clipboard over ssh sessions
+-- Pasting works without this but if it is added will cause latency issues
 vim.g.clipboard = {
 	name = "OSC52",
 	copy = {
 		["+"] = require("vim.ui.clipboard.osc52").copy("+"),
 		["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-	},
-	paste = {
-		["+"] = require("vim.ui.clipboard.osc52").paste("+"),
-		["*"] = require("vim.ui.clipboard.osc52").paste("*"),
 	},
 }
 --
