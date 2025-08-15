@@ -23,6 +23,7 @@ return {
 			python = { "isort", "black" },
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 			sh = { "beautysh" },
+			clang = { "clangd" },
 		},
 		-- Set default options
 		default_format_opts = {
