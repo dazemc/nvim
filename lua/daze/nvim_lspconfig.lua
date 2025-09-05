@@ -35,3 +35,22 @@ require("lspconfig").dartls.setup({
 		end
 	end,
 })
+
+require("lspconfig").systemd_ls.setup({
+	cmd = { "systemd-language-server" },
+	filetypes = { "systemd" },
+	root_markers = { ".git" },
+})
+
+-- Automatically set filetype and start LSP for specific systemd unit file patterns
+vim.api.nvim_create_autocmd("BufEnter", {
+	pattern = { "*.service", "*.mount", "*.device", "*.nspawn", "*.target", "*.timer" },
+	callback = function()
+		vim.bo.filetype = "systemd"
+		vim.lsp.start({
+			name = "systemd_ls",
+			cmd = { "/path/to/systemd-lsp" }, -- Update this path to your systemd-lsp binary
+			root_dir = vim.fn.getcwd(),
+		})
+	end,
+})
