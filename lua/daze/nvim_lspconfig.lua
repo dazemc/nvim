@@ -1,5 +1,8 @@
 vim.lsp.config("ccls", {
 	init_options = {
+		cache = {
+			directory = ".ccls-cache",
+		},
 		compilationDatabaseDirectory = "build",
 		index = {
 			threads = 2,
