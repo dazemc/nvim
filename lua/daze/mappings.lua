@@ -23,6 +23,7 @@ end)
 vim.keymap.set("n", "<leader>d", function()
 	vim.diagnostic.setqflist({ open = true })
 end, { desc = "Diagnostics Pane" })
+vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { noremap = true, silent = true })
 
 -- Panes
 ---- Movement
