@@ -11,18 +11,13 @@ return {
 		},
 		config = function()
 			local mason_lspconfig = require("mason-lspconfig")
-			local lspconfig = require("lspconfig")
 
 			mason_lspconfig.setup({
 				ensure_installed = {
 					"lua_ls",
 					"bashls",
 					"systemd_ls",
-					"superhtml",
-					"prettier",
 					"lemminx",
-					"xmlformatter",
-					"stylelua",
 				},
 				automatic_installation = true,
 			})
