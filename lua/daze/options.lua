@@ -17,7 +17,7 @@ vim.opt.showcmd = true
 
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.config/nvim/.undodir"
+vim.opt.undodir = vim.fn.stdpath("state") .. "/undo"
 vim.opt.undofile = true
 vim.opt.clipboard = "unnamedplus"
 -- vim.g.clipboard = "osc52"
