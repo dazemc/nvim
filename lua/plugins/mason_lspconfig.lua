@@ -13,7 +13,7 @@ return {
       local mason_lspconfig = require("mason-lspconfig")
 
       mason_lspconfig.setup({
-        ensure_installed = { "lua_ls", "bashls", "lua_ls", "systemd_ls" },
+        ensure_installed = { "lua_ls", "bashls", "lua_ls", "systemd_lsp" },
         automatic_installation = true,
       })
     end,
