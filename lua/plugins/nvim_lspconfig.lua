@@ -1,5 +1,6 @@
 return {
   "neovim/nvim-lspconfig",
+  lazy = false,
   opts = function(_, opts)
     local esp32 = require("esp32")
     opts.servers = opts.servers or {}

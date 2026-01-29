@@ -1,28 +1,41 @@
+
 local lspconfig = vim.lsp.config
-vim.lsp.enable("dartls")
-vim.lsp.enable("ccls")
-vim.lsp.enable("systemd_ls")
+
+-- Dart LSP
+if vim.fn.executable("C:/Users/daze/develop/flutter/bin/dart.bat") == 1 then
+  vim.lsp.enable("dartls")
+end
 
 -- CCLS
-lspconfig("ccls", {
-	init_options = {
-		cache = { directory = ".ccls-cache" },
-		compilationDatabaseDirectory = "build",
-		index = { threads = 2, trackDependencies = true },
-		clang = { excludeArgs = { "-frounding-math" } },
-	},
-})
+if vim.fn.executable("ccls") == 1 then
+  vim.lsp.enable("ccls")
+  lspconfig("ccls", {
+    init_options = {
+      cache = { directory = ".ccls-cache" },
+      compilationDatabaseDirectory = "build",
+      index = { threads = 2, trackDependencies = true },
+      clang = { excludeArgs = { "-frounding-math" } },
+    },
+  })
+end
+
+-- Systemd LSP
+if vim.fn.executable("systemd-lsp") == 1 then
+  vim.lsp.enable("systemd_ls")
+end
 
 -- Lemminx (XML/HTML)
-lspconfig("lemminx", {
-	filetypes = { "html", "htm", "xhtml", "xml", "xsd", "xsl", "xslt", "svg" },
-	settings = {
-		xml = {
-			catalogs = {},
-			format = { enabled = true, splitAttributes = false },
-		},
-		html = {
-			format = { enabled = true, templating = true },
-		},
-	},
-})
+if vim.fn.executable("lemminx") == 1 then
+  lspconfig("lemminx", {
+    filetypes = { "html", "htm", "xhtml", "xml", "xsd", "xsl", "xslt", "svg" },
+    settings = {
+      xml = {
+        catalogs = {},
+        format = { enabled = true, splitAttributes = false },
+      },
+      html = {
+        format = { enabled = true, templating = true },
+      },
+    },
+  })
+end

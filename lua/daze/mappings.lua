@@ -14,7 +14,7 @@ local mappings = {
 		{ "gD", buf.declaration, "Declaration" },
 		{ "gi", buf.implementation, "Implementation" },
 		{ "gr", buf.references, "References" },
-		{ "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], "sed" },
+		{ "<leader>i", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], "sed" },
 		{
 			"[",
 			function()
