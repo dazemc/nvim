@@ -2,7 +2,7 @@
 local lspconfig = vim.lsp.config
 
 -- Dart LSP
-if vim.fn.executable("C:/Users/daze/develop/flutter/bin/dart.bat") == 1 then
+if vim.fn.executable("dart") == 1 then
   vim.lsp.enable("dartls")
 end
 
