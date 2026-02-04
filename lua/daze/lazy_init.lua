@@ -15,7 +15,9 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+local uv = vim.uv or vim.loop
 local lazyopts = {
+	concurrency = (uv and uv.available_parallelism) and (uv.available_parallelism() * 2) or nil,
 	-- root install directory
 	root = vim.fn.stdpath("data") .. "/lazy",
 
@@ -31,10 +33,6 @@ local lazyopts = {
 	local_spec = true,
 	lockfile = vim.fn.stdpath("config") .. "/lazy-lock.json",
 
-	-- concurrency
-	concurrency = jit.os:find("Windows") and (vim.uv.available_parallelism() * 2) or nil,
-
-	-- git options
 	git = {
 		log = { "-8" },
 		timeout = 120,
