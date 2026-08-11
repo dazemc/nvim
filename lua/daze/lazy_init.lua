@@ -52,7 +52,7 @@ local lazyopts = {
 	-- install options
 	install = {
 		missing = true,
-		colorscheme = { "habamax" },
+		colorscheme = { "moonfly" },
 	},
 
 	-- UI customization

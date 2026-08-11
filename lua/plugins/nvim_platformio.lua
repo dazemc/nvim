@@ -29,7 +29,7 @@ return {
 					end,
 				})
 				vim.g.platformioRootDir = vim.fn.getcwd()
-				require("lazy").restore({ plguins = { "nvim-platformio.lua" }, show = false })
+				require("lazy").restore({ plugins = { "nvim-platformio.lua" }, show = false })
 			end, {})
 		end
 		return vim.g.platformioRootDir ~= nil
