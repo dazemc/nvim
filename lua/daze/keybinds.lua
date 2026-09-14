@@ -41,6 +41,10 @@ local mappings = {
 		{ "<A-q>", "<C-w>q" },
 		{ "<A-x>", ":split<CR>" },
 		{ "<A-y>", ":vsplit<CR>" },
+		{ "<leader>t", ":tabnew<CR>", "New Tab" },
+		{ "<leader>tc", ":tabclose<CR>", "Close Tab" },
+		{ "<A-n>", ":bnext<CR>", "Next Buffer" },
+		{ "<A-p>", ":bprevious<CR>", "Previous Buffer" },
 	},
 	v = { { "J", ":m '>+1<CR>gv=gv" }, { "K", ":m '<-2<CR>gv=gv" } },
 }

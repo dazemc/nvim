@@ -4,30 +4,31 @@ local function exe(name)
 end
 
 -- Detect ESP32 project
-local is_esp32 = vim.fn.findfile("build.clang", ".;**") ~= "" or vim.fn.finddir("build.clang", ".;**") ~= ""
+-- local is_esp32 = vim.fn.findfile("build.clang", ".;**") ~= "" or vim.fn.finddir("build.clang", ".;**") ~= ""
 
 -- Clangd
-if is_esp32 then
-	local ok, esp32 = pcall(require, "esp32")
-	if ok then
-		vim.lsp.config("clangd", esp32.lsp_config())
-	end
-else
-	vim.lsp.config("clangd", {
-		cmd = { "clangd" },
-		filetypes = { "c", "cpp", "objc", "objcpp" },
-		root_markers = {
-			"compile_commands.json",
-			"compile_flags.txt",
-			".clangd",
-			".git",
-			"CMakeLists.txt",
-			"meson.build",
-		},
-		single_file_support = true,
-	})
-end
-vim.lsp.enable("clangd")
+vim.lsp.enable("clangd", false)
+-- if is_esp32 then
+-- 	local ok, esp32 = pcall(require, "esp32")
+-- 	if ok then
+-- 		vim.lsp.config("clangd", esp32.lsp_config())
+-- 	end
+-- else
+-- 	vim.lsp.config("clangd", {
+-- 		cmd = { "clangd" },
+-- 		filetypes = { "c", "cpp", "objc", "objcpp" },
+-- 		root_markers = {
+-- 			"compile_commands.json",
+-- 			"compile_flags.txt",
+-- 			".clangd",
+-- 			".git",
+-- 			"CMakeLists.txt",
+-- 			"meson.build",
+-- 		},
+-- 		single_file_support = true,
+-- 	})
+-- end
+-- vim.lsp.enable("clangd")
 
 -- Dart
 if exe("dart") then
@@ -37,11 +38,47 @@ end
 -- CCLS
 if exe("ccls") then
 	vim.lsp.config("ccls", {
+		cmd = { "ccls" },
+		filetypes = { "c", "cpp", "objc", "objcpp" },
+		root_markers = {
+			"compile_commands.json",
+			".ccls",
+			"CMakeLists.txt",
+			".git",
+		},
+		single_file_support = true,
 		init_options = {
-			cache = { directory = ".ccls-cache" },
-			compilationDatabaseDirectory = "build",
-			index = { threads = 2, trackDependencies = true },
-			clang = { excludeArgs = { "-frounding-math" } },
+			cache = {
+				directory = ".ccls-cache",
+			},
+			compilationDatabaseDirectory = ".",
+			index = {
+				threads = 0,
+			},
+			clang = {
+				extraArgs = {
+					"-std=gnu++26",
+					"--target=xtensa-esp32-elf",
+					"-DARDUINO=10812",
+					"-DARDUINO_ARCH_ESP32",
+					"-D_GLIBCXX_HAVE_POSIX_SEMAPHORE",
+					"-D_GLIBCXX_USE_POSIX_SEMAPHORE",
+
+					-- force the correct libstdc++ paths
+					"-isystem",
+					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/xtensa-esp-elf/include/c++/15.2.0",
+					"-isystem",
+					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/xtensa-esp-elf/include/c++/15.2.0/xtensa-esp-elf/esp32",
+					"-isystem",
+					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/xtensa-esp-elf/include/c++/15.2.0/backward",
+					"-isystem",
+					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include",
+					"-isystem",
+					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include-fixed",
+					"-isystem",
+					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/xtensa-esp-elf/include",
+				},
+			},
 		},
 	})
 	vim.lsp.enable("ccls")
@@ -104,4 +141,14 @@ if exe("lua-language-server") then
 		},
 	})
 	vim.lsp.enable("lua_ls")
+end
+
+-- qmlls
+if vim.fn.executable("/usr/lib/qt6/bin/qmlls") == 1 then
+	vim.lsp.config("qmlls", {
+		cmd = { "/usr/lib/qt6/bin/qmlls" },
+		filetypes = { "qml", "qmljs" },
+		root_markers = { ".git" },
+	})
+	vim.lsp.enable("qmlls")
 end

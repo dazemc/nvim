@@ -1,6 +1,6 @@
 return {
 	"stevearc/conform.nvim",
-	event = "BufWritePre",
+	event = { "BufReadPre", "BufNewFile" },
 	cmd = "ConformInfo",
 	keys = {
 		{
@@ -35,6 +35,15 @@ return {
 		formatters = {
 			shfmt = {
 				prepend_args = { "-i", "2" },
+			},
+			["clang-format"] = {
+				prepend_args = { "--style={BasedOnStyle: LLVM, SortIncludes: Never}" },
+			},
+			prettier = {
+				prepend_args = { "--with-node-modules" },
+			},
+			prettierd = {
+				prepend_args = { "--with-node-modules" },
 			},
 		},
 	},
