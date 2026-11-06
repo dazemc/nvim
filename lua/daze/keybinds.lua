@@ -6,11 +6,8 @@ local function map(mode, lhs, rhs, desc)
 end
 local mappings = {
 	n = {
-		-- code doc
-		{ "gd", buf.definition, "Definition" },
-		{ "gD", buf.declaration, "Declaration" },
+		-- gd/gD/gr are owned by snacks pickers in lua/plugins/snacks.lua.
 		{ "gi", buf.implementation, "Implementation" },
-		{ "gr", buf.references, "References" },
 		{ "<leader>i", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], "sed" },
 		{
 			"[",
@@ -49,10 +46,10 @@ local mappings = {
 	v = { { "J", ":m '>+1<CR>gv=gv" }, { "K", ":m '<-2<CR>gv=gv" } },
 }
 for mode, mode_mappings in pairs(mappings) do
-	for _, mappping in ipairs(mode_mappings) do
-		local key = mappping[1]
-		local action = mappping[2]
-		local desc = mappping[3]
+	for _, mapping in ipairs(mode_mappings) do
+		local key = mapping[1]
+		local action = mapping[2]
+		local desc = mapping[3]
 		map(mode, key, action, desc)
 	end
 end

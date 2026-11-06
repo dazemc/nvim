@@ -15,8 +15,9 @@ return {
 	config = function()
 		vim.filetype.add({
 			pattern = {
+				-- Hyprland Lua files stay filetype lua so lua_ls and the Lua
+				-- parser work; only legacy .conf files are hyprlang.
 				[".*/hypr/.*%.conf"] = "hyprlang",
-				[".*/hypr/.*%.lua"] = "hyprlang",
 			},
 		})
 

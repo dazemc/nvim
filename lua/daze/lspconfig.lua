@@ -30,10 +30,8 @@ vim.lsp.enable("clangd", false)
 -- end
 -- vim.lsp.enable("clangd")
 
--- Dart
-if exe("dart") then
-	vim.lsp.enable("dartls")
-end
+-- Dart is configured by flutter-tools.nvim; enabling dartls here as well
+-- would attach a second client to every Dart buffer.
 
 -- CCLS
 if exe("ccls") then
@@ -84,6 +82,11 @@ if exe("ccls") then
 	vim.lsp.enable("ccls")
 end
 
+-- Bash
+if exe("bash-language-server") then
+	vim.lsp.enable("bashls")
+end
+
 -- Systemd
 if exe("systemd-lsp") then
 	vim.lsp.enable("systemd_ls")
@@ -92,14 +95,12 @@ end
 -- Lemminx
 if exe("lemminx") then
 	vim.lsp.config("lemminx", {
-		filetypes = { "html", "htm", "xhtml", "xml", "xsd", "xsl", "xslt", "svg" },
+		-- LemMinX is an XML language server; it does not speak HTML.
+		filetypes = { "xhtml", "xml", "xsd", "xsl", "xslt", "svg" },
 		settings = {
 			xml = {
 				catalogs = {},
 				format = { enabled = true, splitAttributes = false },
-			},
-			html = {
-				format = { enabled = true, templating = true },
 			},
 		},
 	})
@@ -124,10 +125,9 @@ if exe("hyprls") then
 	vim.lsp.enable("hyprlang")
 end
 
--- Lua LS (lua + hyprlang)
+-- Lua LS
 if exe("lua-language-server") then
 	vim.lsp.config("lua_ls", {
-		filetypes = { "lua", "hyprlang" },
 		settings = {
 			Lua = {
 				runtime = { version = "LuaJIT" },
@@ -141,14 +141,4 @@ if exe("lua-language-server") then
 		},
 	})
 	vim.lsp.enable("lua_ls")
-end
-
--- qmlls
-if vim.fn.executable("/usr/lib/qt6/bin/qmlls") == 1 then
-	vim.lsp.config("qmlls", {
-		cmd = { "/usr/lib/qt6/bin/qmlls" },
-		filetypes = { "qml", "qmljs" },
-		root_markers = { ".git" },
-	})
-	vim.lsp.enable("qmlls")
 end

@@ -20,10 +20,49 @@ vim.opt.showcmd = true
 
 vim.opt.swapfile = false
 vim.opt.backup = false
-vim.opt.undodir = vim.fn.stdpath("state") .. "/undo"
+local undodir = vim.fn.stdpath("state") .. "/undo"
+vim.fn.mkdir(undodir, "p")
+vim.opt.undodir = undodir
 vim.opt.undofile = true
 vim.opt.clipboard = "unnamedplus"
--- vim.g.clipboard = "osc52"
+
+-- OSC 52 is a copy-only transport; terminals do not allow reading the
+-- clipboard back. Paste through wl-paste on the local Wayland session so
+-- p/P from + and * actually return text.
+local function wayland_paste(primary)
+	if vim.fn.executable("wl-paste") == 0 then
+		return { {}, "v" }
+	end
+	local cmd = { "wl-paste", "--no-newline" }
+	if primary then
+		table.insert(cmd, 2, "--primary")
+	end
+	local lines = vim.fn.systemlist(cmd)
+	if vim.v.shell_error ~= 0 then
+		return { {}, "v" }
+	end
+	return { lines, "v" }
+end
+
+vim.g.clipboard = {
+	name = "OSC 52 copy / Wayland paste",
+	copy = {
+		["+"] = function(lines, _)
+			require("vim.ui.clipboard.osc52").copy("+")(lines)
+		end,
+		["*"] = function(lines, _)
+			require("vim.ui.clipboard.osc52").copy("*")(lines)
+		end,
+	},
+	paste = {
+		["+"] = function()
+			return wayland_paste(false)
+		end,
+		["*"] = function()
+			return wayland_paste(true)
+		end,
+	},
+}
 
 vim.opt.hlsearch = true
 vim.opt.incsearch = true
@@ -34,8 +73,12 @@ vim.opt.termguicolors = true
 
 vim.opt.showmode = false
 
--- No automatic comment insertion
-vim.cmd([[autocmd FileType * set formatoptions-=ro]])
+-- No automatic comment insertion; use an augroup so reloads do not stack it.
+vim.api.nvim_create_autocmd("FileType", {
+	group = vim.api.nvim_create_augroup("UserFormatOptions", { clear = true }),
+	pattern = "*",
+	command = "setlocal formatoptions-=ro",
+})
 
 -- Highlight yank
 vim.api.nvim_create_autocmd("TextYankPost", {

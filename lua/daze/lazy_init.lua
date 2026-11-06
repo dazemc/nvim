@@ -1,4 +1,7 @@
-vim.env.PATH = vim.env.PATH .. ":" .. vim.fn.stdpath("data") .. "/mason/bin"
+local mason_bin = vim.fn.stdpath("data") .. "/mason/bin"
+if not (vim.env.PATH or ""):find(mason_bin, 1, true) then
+	vim.env.PATH = (vim.env.PATH or "") .. ":" .. mason_bin
+end
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
 	local lazyrepo = "https://github.com/folke/lazy.nvim.git"

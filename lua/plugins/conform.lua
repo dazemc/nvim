@@ -17,7 +17,9 @@ return {
 	opts = {
 		formatters_by_ft = {
 			lua = { "stylua" },
-			python = { "isort", "black" },
+			-- isort/black are not installed; ruff is provisioned by Mason.
+			python = { "ruff_organize_imports", "ruff_format" },
+			xml = { "xmlformatter" },
 			javascript = { "prettierd", "prettier", stop_after_first = true },
 			typescript = { "prettierd", "prettier", stop_after_first = true },
 			sh = { "shfmt" },
