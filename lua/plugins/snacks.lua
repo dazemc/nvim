@@ -27,6 +27,12 @@ return {
 		},
 	},
 	config = function(_, opts)
+		-- KITTY_WINDOW_ID is set by kitty even inside tmux; tell Snacks so the
+		-- image checks and placeholders use the kitty backend instead of
+		-- treating the tmux TERM as an unsupported terminal.
+		if vim.env.KITTY_WINDOW_ID then
+			vim.env.SNACKS_KITTY = "1"
+		end
 		require("snacks").setup(opts)
 		-- Snacks owns the generic UI hooks; dressing.nvim is no longer a
 		-- dependency, so nothing overwrites these after setup.

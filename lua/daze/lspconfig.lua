@@ -35,6 +35,49 @@ vim.lsp.enable("clangd", false)
 
 -- CCLS
 if exe("ccls") then
+	local function newest(pattern)
+		local matches = vim.fn.glob(pattern, false, true)
+		table.sort(matches)
+		return matches[#matches]
+	end
+
+	-- ESP32 flags are applied only when a toolchain is present. The versioned
+	-- paths are derived from the newest xtensa-esp-elf install, so an ESP-IDF
+	-- update does not leave ccls pointing at a removed libstdc++.
+	local extra_args = { "-std=gnu++26" }
+	local toolchain = newest(vim.fn.expand("~/.espressif/tools/xtensa-esp-elf") .. "/esp-*")
+	if toolchain then
+		local root = toolchain .. "/xtensa-esp-elf"
+		local cxx = newest(root .. "/xtensa-esp-elf/include/c++/*")
+		local gcc = newest(root .. "/lib/gcc/xtensa-esp-elf/*")
+		vim.list_extend(extra_args, {
+			"--target=xtensa-esp32-elf",
+			"-DARDUINO=10812",
+			"-DARDUINO_ARCH_ESP32",
+			"-D_GLIBCXX_HAVE_POSIX_SEMAPHORE",
+			"-D_GLIBCXX_USE_POSIX_SEMAPHORE",
+		})
+		if cxx then
+			vim.list_extend(extra_args, {
+				"-isystem",
+				cxx,
+				"-isystem",
+				cxx .. "/xtensa-esp-elf/esp32",
+				"-isystem",
+				cxx .. "/backward",
+			})
+		end
+		if gcc then
+			vim.list_extend(extra_args, {
+				"-isystem",
+				gcc .. "/include",
+				"-isystem",
+				gcc .. "/include-fixed",
+			})
+		end
+		vim.list_extend(extra_args, { "-isystem", root .. "/xtensa-esp-elf/include" })
+	end
+
 	vim.lsp.config("ccls", {
 		cmd = { "ccls" },
 		filetypes = { "c", "cpp", "objc", "objcpp" },
@@ -54,28 +97,7 @@ if exe("ccls") then
 				threads = 0,
 			},
 			clang = {
-				extraArgs = {
-					"-std=gnu++26",
-					"--target=xtensa-esp32-elf",
-					"-DARDUINO=10812",
-					"-DARDUINO_ARCH_ESP32",
-					"-D_GLIBCXX_HAVE_POSIX_SEMAPHORE",
-					"-D_GLIBCXX_USE_POSIX_SEMAPHORE",
-
-					-- force the correct libstdc++ paths
-					"-isystem",
-					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/xtensa-esp-elf/include/c++/15.2.0",
-					"-isystem",
-					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/xtensa-esp-elf/include/c++/15.2.0/xtensa-esp-elf/esp32",
-					"-isystem",
-					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/xtensa-esp-elf/include/c++/15.2.0/backward",
-					"-isystem",
-					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include",
-					"-isystem",
-					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/lib/gcc/xtensa-esp-elf/15.2.0/include-fixed",
-					"-isystem",
-					"/home/daze/.espressif/tools/xtensa-esp-elf/esp-15.2.0_20251204/xtensa-esp-elf/xtensa-esp-elf/include",
-				},
+				extraArgs = extra_args,
 			},
 		},
 	})
