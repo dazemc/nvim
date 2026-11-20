@@ -89,7 +89,7 @@ end
 
 -- Systemd
 if exe("systemd-lsp") then
-	vim.lsp.enable("systemd_ls")
+	vim.lsp.enable("systemd_lsp")
 end
 
 -- Lemminx
@@ -107,13 +107,14 @@ if exe("lemminx") then
 	vim.lsp.enable("lemminx")
 end
 
--- Hyprlang
+-- Hyprlang (canonical nvim-lspconfig name is hyprls)
 if exe("hyprls") then
-	vim.lsp.config("hyprlang", {
-		cmd = { "hyprls" },
+	vim.lsp.config("hyprls", {
+		cmd = { "hyprls", "--stdio" },
 		filetypes = { "hyprlang" },
-		root_dir = function(fname)
-			return vim.fs.root(fname, { ".git" }) or vim.fn.getcwd()
+		root_dir = function(bufnr, on_dir)
+			local file = vim.api.nvim_buf_get_name(bufnr)
+			on_dir(vim.fs.root(file, { ".git" }) or vim.fn.getcwd())
 		end,
 		settings = {
 			hyprls = {
@@ -122,7 +123,7 @@ if exe("hyprls") then
 			},
 		},
 	})
-	vim.lsp.enable("hyprlang")
+	vim.lsp.enable("hyprls")
 end
 
 -- Lua LS
@@ -142,3 +143,16 @@ if exe("lua-language-server") then
 	})
 	vim.lsp.enable("lua_ls")
 end
+
+-- Other mason-installed servers that were previously auto-enabled. Keep the
+-- list explicit so clangd stays off and one filetype never gets two clients.
+local function enable_if(bin, name)
+	if exe(bin) then
+		vim.lsp.enable(name)
+	end
+end
+
+enable_if("basedpyright-langserver", "basedpyright")
+enable_if("ruff", "ruff")
+enable_if("cmake-language-server", "cmake")
+enable_if("stylua", "stylua")

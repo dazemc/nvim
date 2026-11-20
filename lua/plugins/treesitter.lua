@@ -22,6 +22,10 @@ return {
 		})
 
 		local ts = require("nvim-treesitter")
+		local supported = {}
+		for _, lang in ipairs(ts.get_available()) do
+			supported[lang] = true
+		end
 
 		vim.api.nvim_create_autocmd("User", {
 			pattern = "LazyDone",
@@ -82,6 +86,9 @@ return {
 					return
 				end
 				local lang = vim.treesitter.language.get_lang(ev.match) or ev.match
+				if not supported[lang] then
+					return
+				end
 				pcall(vim.treesitter.start, ev.buf, lang)
 				vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 				ts.install({ lang })

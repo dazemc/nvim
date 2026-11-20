@@ -7,6 +7,7 @@ return {
 		bigfile = { enabled = true },
 		dashboard = { enabled = true },
 		explorer = { enabled = true },
+		image = { enabled = true },
 		indent = { enabled = true },
 		input = { enabled = true },
 		notifier = {
@@ -25,6 +26,13 @@ return {
 			},
 		},
 	},
+	config = function(_, opts)
+		require("snacks").setup(opts)
+		-- Snacks owns the generic UI hooks; dressing.nvim is no longer a
+		-- dependency, so nothing overwrites these after setup.
+		vim.ui.input = require("snacks.input").input
+		vim.ui.select = Snacks.picker.select
+	end,
 	keys = {
 		-- Top Pickers & Explorer
 		{

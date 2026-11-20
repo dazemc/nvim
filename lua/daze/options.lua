@@ -1,5 +1,8 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = "\\"
+-- Perl is not installed and nothing in this config uses its host; keep the
+-- provider from probing for it on every start.
+vim.g.loaded_perl_provider = 0
 
 vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
